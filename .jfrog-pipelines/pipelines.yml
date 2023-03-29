@@ -12,7 +12,7 @@ resources:
     configuration:
       registry: art                                # <-- replace with your artifactory integration
       sourceRepository: docker-local               # <-- required if registry is Artifactory
-      imageName: jfrog-platform-artifactory-nginx/docker-local/dbp  # < -- replace with your image path and name
+      imageName: docker-local.jfrog-platform-artifactory:8082/dbp  # < -- replace with your image path and name
       imageTag: latest
       autoPull: true
       
@@ -47,7 +47,7 @@ pipelines:
           affinityGroup: dbp_group
           dockerFileLocation: .
           dockerFileName: Dockerfile
-          dockerImageName: jfrog-platform-artifactory-nginx/docker-local/dbp  # replace with your image path and name
+          dockerImageName: docker-local.jfrog-platform-artifactory:8082/dbp  # replace with your image path and name
           dockerImageTag: ${run_number}
           inputResources:
             - name: dbp_repo
