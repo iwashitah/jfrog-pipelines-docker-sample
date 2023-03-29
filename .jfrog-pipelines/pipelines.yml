@@ -2,31 +2,31 @@ resources:
   - name: dbp_repo
     type: GitRepo
     configuration:
-      gitProvider: myGithub                       # <-- replace with your integration
-      path: jfrog/jfrog-pipelines-docker-sample    # <-- replace with your repository name
+      gitProvider: my_github                       # <-- replace with your integration
+      path: iwashitah/jfrog-pipelines-docker-sample    # <-- replace with your repository name
       branches:
         include: master
 
   - name: dbp_image
     type: Image
     configuration:
-      registry: myArtifactory                                # <-- replace with your artifactory integration
-      sourceRepository: quickstarts-docker-local               # <-- required if registry is Artifactory
-      imageName: pipelines.jfrog.io/quickstarts-docker-local/dbp  # < -- replace with your image path and name
+      registry: art                                # <-- replace with your artifactory integration
+      sourceRepository: docker-local               # <-- required if registry is Artifactory
+      imageName: docker-local.jfrog-platform-artifactory/dbp  # < -- replace with your image path and name
       imageTag: latest
       autoPull: true
       
   - name: dbp_build_info
     type: BuildInfo
     configuration:
-      sourceArtifactory: myArtifactory
+      sourceArtifactory: art
       buildName: dbp_build
       buildNumber: 1    
 
   - name: dbp_promoted_build_info
     type: BuildInfo
     configuration:
-      sourceArtifactory: myArtifactory
+      sourceArtifactory: art
       buildName: dbp_build
       buildNumber: 1
       
@@ -47,13 +47,13 @@ pipelines:
           affinityGroup: dbp_group
           dockerFileLocation: .
           dockerFileName: Dockerfile
-          dockerImageName: pipelines.jfrog.io/quickstarts-docker-local/dbp  # replace with your image path and name
+          dockerImageName: docker-local.jfrog-platform-artifactory/dbp  # replace with your image path and name
           dockerImageTag: ${run_number}
           inputResources:
             - name: dbp_repo
             - name: cron_trigger_docker
           integrations:
-            - name: myArtifactory                            # <-- replace with your artifactory integration
+            - name: art                            # <-- replace with your artifactory integration
         execution:
           onStart:
               # - msg="Run description updated from step $step_id"
@@ -64,9 +64,9 @@ pipelines:
         type: DockerPush
         configuration:
           affinityGroup: dbp_group
-          targetRepository: quickstarts-target-local
+          targetRepository: docker-local
           integrations:
-            - name: myArtifactory                            # <-- replace with your artifactory integration
+            - name: art                            # <-- replace with your artifactory integration
           inputSteps:
             - name: docker_build
           outputResources:
@@ -83,9 +83,9 @@ pipelines:
       - name: promote_dbp_build
         type: PromoteBuild
         configuration:
-          targetRepository: quickstarts-target-local
+          targetRepository: docker-local
           integrations:
-            - name: myArtifactory
+            - name: art
           inputResources:
             - name: dbp_build_info
           outputResources:
